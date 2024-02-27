@@ -1,4 +1,4 @@
-# Understanding customer dempgraphics and behaviour: Traveltide-Agency
+# Understanding customer demographics and behaviour: Traveltide-Agency
 ## Project Overview
 
 This data analysis project is aimed at assisting the Traveltide team develop an understanding of their customers in other to provide better service.
