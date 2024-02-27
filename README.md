@@ -49,7 +49,8 @@ GROUP BY
 ORDER BY 
     total_no_of_trips DESC;
 ```
-2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months
+2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
+- Abandoned session means browsing without booking anything.
 ```sql
 WITH SessionByMonths AS (
     SELECT
@@ -67,4 +68,12 @@ SELECT
 FROM 
     SessionByMonths;	
 ```
+## Results/Findings
+1. Customers of age 34- 45 of all genders are the most travellers
+2. Session abandonement increases significantly in non-summer months.
+
+## Recommendations
+1. Target High-Travel Demographics: Based on the first query, the travel company can focus its marketing efforts on the age and gender groups that travel the most, gearing promotions and offers towards these demographics.
+
+2. Seasonal Marketing Strategies: The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rates to encourage customers to complete their bookings.
 
