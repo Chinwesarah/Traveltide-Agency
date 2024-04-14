@@ -15,6 +15,7 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 ## Data Analysis
 Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
 1. Which cross-section of age and gender travels the most?
+
 Expected columns: total_no_of_trips, age_group.
 ```sql
 WITH age_table AS (
@@ -50,6 +51,7 @@ ORDER BY
 ```
 2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
 Abandoned session means browsing without booking anything.
+
 Expected columns: summer_abandon_rate, other_abandon_rate.
 ```sql
 WITH SessionByMonths AS (
@@ -69,6 +71,7 @@ FROM
     SessionByMonths;
 ```
 3. Return users who have booked and completed at least 10 flights, ordered by user_id.
+
 Expected column: user_id.
 ```sql
 SELECT 
@@ -89,6 +92,7 @@ ORDER BY
 
 4. Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time 
 of the next departing flight taken by the user.
+
 Expected Columns: user_id, biggest_window.
 
 ```sql
