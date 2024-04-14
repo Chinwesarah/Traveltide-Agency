@@ -15,6 +15,7 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 ## Data Analysis
 Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
 1. Which cross-section of age and gender travels the most?
+Expected columns: total_no_of_trips, age_group.
 ```sql
 WITH age_table AS (
     SELECT 
@@ -48,7 +49,8 @@ ORDER BY
     total_no_of_trips DESC;
 ```
 2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
-- Abandoned session means browsing without booking anything.
+Abandoned session means browsing without booking anything.
+Expected columns: summer_abandon_rate, other_abandon_rate.
 ```sql
 WITH SessionByMonths AS (
     SELECT
@@ -67,6 +69,7 @@ FROM
     SessionByMonths;
 ```
 3. Return users who have booked and completed at least 10 flights, ordered by user_id.
+Expected column: user_id.
 ```sql
 SELECT 
     user_id
@@ -83,6 +86,52 @@ HAVING
 ORDER BY
     user_id;
 ```
+
+4. Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time 
+of the next departing flight taken by the user.
+Expected Columns: user_id, biggest_window.
+
+```sql
+WITH cte AS (
+    SELECT 
+        user_id, 
+        flights.trip_id,
+        departure_time
+    FROM
+        flights
+    LEFT JOIN
+        sessions ON sessions.trip_id = flights.trip_id
+    WHERE	
+        user_id IN (
+            SELECT 
+                user_id 
+            FROM
+                flights
+            LEFT JOIN
+                sessions ON sessions.trip_id = flights.trip_id
+            GROUP BY 
+                user_id
+            HAVING 
+                COUNT(flights.trip_id) > 10
+        )
+    ORDER BY
+        user_id, departure_time
+),
+cte2 AS (
+    SELECT 
+        *,
+        departure_time::date - LAG(departure_time::date) OVER (PARTITION BY user_id ORDER BY departure_time) AS time_difference_in_days
+    FROM 
+        cte
+)
+SELECT 
+    USER_ID, 
+    MAX(time_difference_in_days) AS biggest_window
+FROM 
+    cte2
+GROUP BY 
+    USER_ID;
+```
 #### Note: Kindly refer to the attached SQL file for more questions and answers.
 
 ## Results/Findings
@@ -95,5 +144,5 @@ ORDER BY
 
 2. Seasonal Marketing Strategies: The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rate, like the non-summer months, to encourage customers to complete their bookings.
 
-3. Customer loyalty programs: The third query returns frequent flyers, a strategy to reward their loyalty can be put in place, such as exclusive discounts, upgrades, etc so as to retain their loyalty and not lose them to other competitors.
+3. Customer loyalty programs: The third query returns frequent flyers, a strategy to reward their loyalty can be put in place, such as exclusive discounts, upgrades, etc so as to retain their loyalty and not lose them to other competitors. 
 
