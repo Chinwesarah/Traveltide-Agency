@@ -1,4 +1,4 @@
-# Understanding Customer Demographics and Behaviour: Traveltide-Agency
+# Understanding Customers' Demographics and Behaviour: Traveltide-Agency
 ## Project Overview
 
 This data analysis project is aimed at assisting the Traveltide team develop an understanding of their customers in other to provide better service.
@@ -7,15 +7,13 @@ Traveltide Agency is an online travel industry. It has experienced steady growth
 The TravelTide team has recently shifted focus from aggressively acquiring new customers to better serving their existing customers. In order to achieve better service, the team recognizes that it is important to understand customer demographics and behavior.
 
 ## Data Sources
-postgresql://Test:bQNxVzJL4g6u@ep-noisy-flower-846766.us-east-2.aws.neon.tech/TravelTide?sslmode=require
+Please refer to the attached Microsoft Word document for the Entity Relationship Diagram and Data Dictionary
 
 ## Tools
 - Postgres SQL - Used for data analysis
-- Tableau - Used for data visualization
 
 ## Data Analysis
-Since the aim of this project is to better understand customers, some of the uestions that  were answered using SQL are as follows:
-
+Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
 1. Which cross-section of age and gender travels the most?
 ```sql
 WITH age_table AS (
@@ -54,26 +52,48 @@ ORDER BY
 ```sql
 WITH SessionByMonths AS (
     SELECT
-        session_id,
+     session_id,session_start, session_end,
         CASE
-            WHEN EXTRACT(MONTH FROM session_end) IN (6, 7, 8) THEN 'summer'
-            ELSE 'other'
+            WHEN EXTRACT(MONTH FROM session_start) IN (6, 7, 8) and trip_id IS NULL THEN 'summer'
+  					WHEN EXTRACT(MONTH FROM session_start) NOT IN (6, 7, 8) and trip_id IS NULL THEN 'other'
         END AS session_month
     FROM sessions
-  WHERE trip_id IS NULL
+  	ORDER BY session_end DESC
 )
 SELECT 
-    ROUND(SUM(CASE WHEN session_month = 'summer' THEN 1 ELSE 0 END) / 3162887::numeric, 3) AS summer_abandon_rate,
-    ROUND(SUM(CASE WHEN session_month = 'other' THEN 1 ELSE 0 END) / 3072218::numeric, 3) AS other_abandon_rate
+    ROUND(SUM(CASE WHEN session_month = 'summer' THEN 1 ELSE 0 END) / (SUM(CASE WHEN EXTRACT (MONTH FROM session_END) IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS summer_abandon_rate,
+    ROUND(SUM(CASE WHEN session_month = 'other' THEN 1 ELSE 0 END) /(SUM(CASE WHEN EXTRACT (MONTH FROM session_END) NOT IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS other_abandon_rate
 FROM 
-    SessionByMonths;	
+    SessionByMonths;
 ```
+3. Return users who have booked and completed at least 10 flights, ordered by user_id.
+```sql
+SELECT 
+    user_id
+FROM
+    flights
+LEFT JOIN
+    sessions ON sessions.trip_id = flights.trip_id
+WHERE
+    cancellation = 'false'
+GROUP BY 
+    user_id
+HAVING 
+    COUNT(flights.trip_id) >= 10
+ORDER BY
+    user_id;
+```
+#### Note: Kindly refer to the attached SQL file for more questions and answers.
+
 ## Results/Findings
+
 1. Customers of age 34- 45 of all genders are the most travellers
-2. Session abandonement increases significantly in non-summer months.
+2. Session abandonement is higher in non-summer months.
 
 ## Recommendations
 1. Target High-Travel Demographics: Based on the first query, the travel company can focus its marketing efforts on the age and gender groups that travel the most, gearing promotions and offers towards these demographics.
 
-2. Seasonal Marketing Strategies: The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rates to encourage customers to complete their bookings.
+2. Seasonal Marketing Strategies: The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rate, like the non-summer months, to encourage customers to complete their bookings.
+
+3. Customer loyalty programs: The third query returns frequent flyers, a strategy to reward their loyalty can be put in place, such as exclusive discounts, upgrades, etc so as to retain their loyalty and not lose them to other competitors.
 
