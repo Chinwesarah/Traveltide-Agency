@@ -136,6 +136,65 @@ FROM
 GROUP BY 
     USER_ID;
 ```
+
+5. Find the user_ids of people whose origin airport is Boston (BOS) and whose first and last flight were to the same destination airport. Only include people who have flown out of Boston at least twice.
+Expected Columns: user_id.
+```sql
+WITH CTE AS (
+    SELECT 
+        sessions.user_id, 
+        flights.trip_id, 
+        destination_airport, 
+        departure_time 
+    FROM 
+        flights 
+    JOIN 
+        sessions ON flights.trip_id = sessions.trip_id 
+    WHERE 
+        origin_airport = 'BOS'  
+        AND cancellation = 'false' 
+        AND sessions.user_id IN (
+            SELECT 
+                sessions.user_id 
+            FROM 
+                flights 
+            JOIN 
+                sessions ON flights.trip_id = sessions.trip_id 
+            WHERE 
+                cancellation = 'false'         
+            GROUP BY 
+                sessions.user_id 
+            HAVING 
+                COUNT(flights.trip_id) >= 2
+        ) 
+    ORDER BY 
+        user_id, departure_time
+),
+CTE2 AS (
+    SELECT
+        user_id,
+        departure_time,
+        destination_airport,
+        ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY departure_time) AS first_trip_rank,
+        ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY departure_time DESC) AS last_trip_rank
+    FROM
+        cte
+)
+SELECT
+    t1.user_id
+FROM
+    CTE2 t1
+JOIN
+    CTE2 t2
+ON
+    t1.user_id = t2.user_id
+WHERE
+    t1.first_trip_rank = 1
+    AND t2.last_trip_rank = 1
+    AND t1.destination_airport = t2.destination_airport;
+```
+
+
 #### Note: Kindly refer to the attached SQL file for more questions and answers.
 
 ## Results/Findings
