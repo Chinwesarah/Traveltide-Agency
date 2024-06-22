@@ -7,7 +7,7 @@ Traveltide Agency is an online travel industry. It has experienced steady growth
 The TravelTide team has recently shifted focus from aggressively acquiring new customers to better serving their existing customers. In order to achieve better service, the team recognizes that it is important to understand customer demographics and behavior.
 
 ## Data Sources
-Please refer to the attached Microsoft Word document for the Entity Relationship Diagram and Data Dictionary
+Please refer to the attached Microsoft Word document for the Entity Relationship Diagram and Data Dictionary 
 
 ## Tools
 - Postgres SQL - Used for data analysis
