@@ -56,17 +56,16 @@ Expected columns: summer_abandon_rate, other_abandon_rate.
 ```sql
 WITH SessionByMonths AS (
     SELECT
-     session_id,session_start, session_end,
+     session_id,session_start, 
         CASE
             WHEN EXTRACT(MONTH FROM session_start) IN (6, 7, 8) and trip_id IS NULL THEN 'summer'
   					WHEN EXTRACT(MONTH FROM session_start) NOT IN (6, 7, 8) and trip_id IS NULL THEN 'other'
         END AS session_month
     FROM sessions
-  	ORDER BY session_end DESC
 )
 SELECT 
-    ROUND(SUM(CASE WHEN session_month = 'summer' THEN 1 ELSE 0 END) / (SUM(CASE WHEN EXTRACT (MONTH FROM session_END) IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS summer_abandon_rate,
-    ROUND(SUM(CASE WHEN session_month = 'other' THEN 1 ELSE 0 END) /(SUM(CASE WHEN EXTRACT (MONTH FROM session_END) NOT IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS other_abandon_rate
+    ROUND(SUM(CASE WHEN session_month = 'summer' THEN 1 ELSE 0 END) / (SUM(CASE WHEN EXTRACT (MONTH FROM session_start) IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS summer_abandon_rate,
+    ROUND(SUM(CASE WHEN session_month = 'other' THEN 1 ELSE 0 END) /(SUM(CASE WHEN EXTRACT (MONTH FROM session_start) NOT IN (6, 7, 8) THEN 1 ELSE 0 END)::NUMERIC), 3) AS other_abandon_rate
 FROM 
     SessionByMonths;
 ```
