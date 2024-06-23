@@ -57,7 +57,16 @@ ORDER BY
 2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
 Abandoned session means browsing without booking anything.
 
-Expected columns: summer_abandon_rate, other_abandon_rate.
+Expected columns: summer_abandon_rate, other_abandon_rate.  
+Codes Explanation:  
+1. A CTE named SessionByMonths was created.
+2. It selects session_start (date of session column in the sessions table) and uses a CASE statement to categorize each session:.
+3. If the month extracted from session_start is June (6), July (7) or August (8) and trip_id is NULL,  then it labels the session as 'summer'.
+4. If the month is not June, July, or August and trip_id is NULL,  then it labels the session as 'other'.
+5. The result is a temporary table with an additional column session_month indicating whether each session was abandoned in summer or other months.
+6. trip_id is NULL because we are concerned with only abandoned sessions, that is, sessions that did not result to a booking and therefore has no associated trip_id.
+7. On the temporary table (SessionByMonths) created, the abandonment rates for summer and other sessions are then calculated and rounded up by dividing the count of abandoned sessions by the total number of sessions for each period.
+
 ```sql
 WITH SessionByMonths AS (
     SELECT
@@ -76,7 +85,12 @@ FROM
 ```
 3. Return users who have booked and completed at least 10 flights, ordered by user_id.
 
-Expected column: user_id.
+Expected column: user_id.  
+Codes Explanation:  
+1. Tables involved are the flights and sessions tables which are joined using LEFT JOIN and connected based on the trip_id column.
+2. Using the WHERE function, cancelled flights are filtered out by setting cancellation = 'false'
+3. Using the HAVING function, only users that have 10 or more flights are included.
+4. The results are grouped by user_id and sorted in ascending order
 ```sql
 SELECT 
     user_id
