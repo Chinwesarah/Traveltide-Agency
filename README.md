@@ -16,7 +16,12 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
 1. Which cross-section of age and gender travels the most?
 
-Expected columns: total_no_of_trips, age_group, gender.
+Expected columns: total_no_of_trips, age_group, gender.  
+Codes Explanation:  
+1. Created a temporary table(CTE) named 'age_table' with columns no_of_trips, gender and age.
+2. The 'no_of_trips' column is derived from using the COUNT function on the  'trip_id' column in the sessions table.
+3. The 'age' column is derived from the 'birthdate' column in the users table using the DATE_PART function.
+4. On the temporary table (age_table) created , ages are further grouped into age_groups using the CASE statement, no_of_trips are then summed up to get 'total_no_of_trips' column and grouped by 'age_group' and 'gender' in descending order. 
 ```sql
 WITH age_table AS (
     SELECT 
