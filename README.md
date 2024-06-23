@@ -111,7 +111,16 @@ ORDER BY
 4. Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time 
 of the next departing flight taken by the user.
 
-Expected Columns: user_id, biggest_window.
+Expected Columns: user_id, biggest_window.  
+Code explanation:  
+1. The first Common Table Expression (CTE1) select details of users who have taken more than 10 flights by retrieving the 'user_id', 'trip_id', and 'departure_time' from the flights table.
+2. The sessions table is joined to the flights table on 'trip_id' using  the LEFT JOIN function.
+3. A subquery is referenced in the WHERE clause to Filter only users (user_id) who have more than 10 flights using the HAVING statement.
+4. The main reason for using the subquery is to filter the users based on aggregated data (i.e., the count of their trips) as you cannot directly use aggregate functions in the WHERE clause of the main query. You need to first compute the aggregated data, which is done in the subquery, and then use that result to filter the main query.
+5. Results are then ordered user_id and departure_time.
+6. The second Common Table Expression (CTE2) is used to calculate the gap in days between consecutive flights for each user by adding a new column 'time_difference_in_days' which calculates the difference in days between the current flight's departure_time and the previous flight's departure_time for each user.
+7. This is achieved using the LAG window function to get the previous departure_time for the same user, ordered by departure_time.
+8. Finally, to find the largest gap in days between consecutive flights for each user, we select user_id and the maximum value of time_difference_in_days for each user and group the results by user_id.
 
 ```sql
 WITH cte AS (
