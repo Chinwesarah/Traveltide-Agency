@@ -167,10 +167,10 @@ GROUP BY
 5. Find the user_ids of people whose origin airport is Boston (BOS) and whose first and last flight were to the same destination airport. Only include people who have flown out of Boston at least twice.
 **Expected Columns:** user_id.
 **Explanation:**
-1.	The first CTE (CTE1)selects all flight details for users who departed from 'BOS' (Boston) and whose flights were not canceled. Only includes us  ers who have taken at least two non-canceled flights.
-2.	The second CTE (CTE2) adds 2 ranking columns to each user's trips based on departure time, one rank (first_trip_rank) ranks departure from oldest to newest, in ascending order and the other (last_trip_rank) ranks from newest to oldest, in descending order for both the first and last trips.
-3.	The final query Joins the CTE2 table to itself to find users where the destination of their first trip is the same as the destination of their last trip.
-4.	The output retrieves user IDs of users whose first and last trip destinations are the same.
+1. The first CTE (CTE1)selects all flight details for users who departed from 'BOS' (Boston) and whose flights were not canceled. Only includes us  ers who have taken at least two non-canceled flights.
+2. The second CTE (CTE2) adds 2 ranking columns to each user's trips based on departure time, one rank (first_trip_rank) ranks departure from oldest to newest, in ascending order and the other (last_trip_rank) ranks from newest to oldest, in descending order for both the first and last trips.
+3. The final query Joins the CTE2 table to itself to find users where the destination of their first trip is the same as the destination of their last trip. 
+4. The output retrieves user IDs of users whose first and last trip destinations are the same.
    
 ```sql
 WITH CTE AS (
