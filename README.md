@@ -16,8 +16,8 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
 1. Which cross-section of age and gender travels the most?
 
-Expected columns: total_no_of_trips, age_group, gender.  
-Codes Explanation:  
+**Expected columns:** total_no_of_trips, age_group, gender.  
+**Explanation:**  
 1. Created a temporary table(CTE) named 'age_table' with columns no_of_trips, gender and age.
 2. The 'no_of_trips' column is derived from using the COUNT function on the  'trip_id' column in the sessions table.
 3. The 'age' column is derived from the 'birthdate' column in the users table using the DATE_PART function.
@@ -57,8 +57,8 @@ ORDER BY
 2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
 Abandoned session means browsing without booking anything.
 
-Expected columns: summer_abandon_rate, other_abandon_rate.  
-Codes Explanation:  
+**Expected columns:** summer_abandon_rate, other_abandon_rate.  
+**Explanation:**  
 1. A CTE named SessionByMonths was created.
 2. It selects session_start (date of session column in the sessions table) and uses a CASE statement to categorize each session:.
 3. If the month extracted from session_start is June (6), July (7) or August (8) and trip_id is NULL,  then it labels the session as 'summer'.
@@ -85,8 +85,8 @@ FROM
 ```
 3. Return users who have booked and completed at least 10 flights, ordered by user_id.
 
-Expected column: user_id.  
-Codes Explanation:  
+**Expected column:** user_id.  
+**Explanation:**  
 1. Tables involved are the flights and sessions tables which are joined using LEFT JOIN and connected based on the trip_id column.
 2. Using the WHERE function, cancelled flights are filtered out by setting cancellation = 'false'
 3. Using the HAVING function, only users that have 10 or more flights are included.
@@ -111,8 +111,8 @@ ORDER BY
 4. Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time 
 of the next departing flight taken by the user.
 
-Expected Columns: user_id, biggest_window.  
-Code explanation:  
+**Expected Columns**: user_id, biggest_window.  
+**Explanation:**  
 1. The first Common Table Expression (CTE1) select details of users who have taken more than 10 flights by retrieving the 'user_id', 'trip_id', and 'departure_time' from the flights table.
 2. The sessions table is joined to the flights table on 'trip_id' using  the LEFT JOIN function.
 3. A subquery is referenced in the WHERE clause to Filter only users (user_id) who have more than 10 flights using the HAVING statement.
@@ -165,7 +165,13 @@ GROUP BY
 ```
 
 5. Find the user_ids of people whose origin airport is Boston (BOS) and whose first and last flight were to the same destination airport. Only include people who have flown out of Boston at least twice.
-Expected Columns: user_id.
+**Expected Columns:** user_id.
+**Explanation:**
+1. The first CTE (CTE1)selects all flight details for users who departed from 'BOS' (Boston) and whose flights were not canceled. Only includes users who have taken at least two non-canceled flights.
+2. The second CTE (CTE2) adds 2 ranking columns to each user's trips based on departure time, one rank (first_trip_rank) ranks departure from oldest to newest, in ascending order and the other (last_trip_rank) ranks from newest to oldest, in descending order for both the first and last trips.
+3. The final query Joins the CTE2 table to itself to find users where the destination of their first trip is the same as the destination of their last trip. 
+4. The output retrieves user IDs of users whose first and last trip destinations are the same.
+   
 ```sql
 WITH CTE AS (
     SELECT 
@@ -220,9 +226,22 @@ WHERE
     AND t2.last_trip_rank = 1
     AND t1.destination_airport = t2.destination_airport;
 ```
+6.  How much session abandonment do we see? Session abandonment means they browsed but did not book anything.  
+**Expected columns:** session_status, no_of_sessions.
+**Explanation:**    
+1. session_status: A CASE statement is used to assign 'abandoned' if trip_id is NULL, otherwise assigns 'trip_booked'.
+2. no_of_sessions:This column counts the number of sessions for each session_status.
+3. The result is grouped by the session_status category.
+```sql
+SELECT 
+		CASE WHEN trip_id IS NULL THEN 'abandoned' ELSE 'trip_booked' END AS session_status,
+    COUNT(session_id) AS no_of_sessions
+FROM 
+		sessions
+GROUP BY 
+		session_status;
+```
 
-
-#### Note: Kindly refer to the attached SQL file for more questions and answers.
 
 ## Results/Findings
 
