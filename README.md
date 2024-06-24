@@ -117,7 +117,7 @@ of the next departing flight taken by the user.
 2. The sessions table is joined to the flights table on 'trip_id' using  the LEFT JOIN function.
 3. A subquery is referenced in the WHERE clause to Filter only users (user_id) who have more than 10 flights using the HAVING statement.
 4. The main reason for using the subquery is to filter the users based on aggregated data (i.e., the count of their trips) as you cannot directly use aggregate functions in the WHERE clause of the main query. You need to first compute the aggregated data, which is done in the subquery, and then use that result to filter the main query.
-5. Results are then ordered user_id and departure_time.
+5. Results are then ordered by user_id and departure_time.
 6. The second Common Table Expression (CTE2) is used to calculate the gap in days between consecutive flights for each user by adding a new column 'time_difference_in_days' which calculates the difference in days between the current flight's departure_time and the previous flight's departure_time for each user.
 7. This is achieved using the LAG window function to get the previous departure_time for the same user, ordered by departure_time.
 8. Finally, to find the largest gap in days between consecutive flights for each user, we select user_id and the maximum value of time_difference_in_days for each user and group the results by user_id.
@@ -227,9 +227,12 @@ WHERE
     AND t2.last_trip_rank = 1
     AND t1.destination_airport = t2.destination_airport;
 ```
-6.  How much session abandonment do we see? Session abandonment means they browsed but did not book anything.  
-**Expected columns:** session_status, no_of_sessions.
+6.  How much session abandonment do we see? Session abandonment means they browsed but did not book anything.
+
+**Expected columns:** session_status, no_of_sessions.  
+
 **Explanation:**    
+
 1. session_status: A CASE statement is used to assign 'abandoned' if trip_id is NULL, otherwise assigns 'trip_booked'.
 2. no_of_sessions:This column counts the number of sessions for each session_status.
 3. The result is grouped by the session_status category.
