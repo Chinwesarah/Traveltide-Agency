@@ -14,7 +14,7 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 
 ## Data Analysis
 Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
-1. Which cross-section of age and gender travels the most?
+**Question 1.** Which cross-section of age and gender travels the most?
 
 **Expected columns:** total_no_of_trips, age_group, gender.  
 **Explanation:**  
@@ -54,7 +54,7 @@ GROUP BY
 ORDER BY 
     total_no_of_trips DESC;
 ```
-2. Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
+**Question 2.** Calculate the proportion of sessions abandoned in summer months (June, July, August) and compare it to the proportion of sessions abandoned in non-summer months.
 Abandoned session means browsing without booking anything.
 
 **Expected columns:** summer_abandon_rate, other_abandon_rate.  
@@ -83,7 +83,7 @@ SELECT
 FROM 
     SessionByMonths;
 ```
-3. Return users who have booked and completed at least 10 flights, ordered by user_id.
+**Question 3.** Return users who have booked and completed at least 10 flights, ordered by user_id.
 
 **Expected column:** user_id.  
 **Explanation:**  
@@ -108,8 +108,7 @@ ORDER BY
     user_id;
 ```
 
-4. Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time 
-of the next departing flight taken by the user.
+**Question 4.** Write a solution that will, for each user_id of users with greater than 10 flights, find out the largest window of days between the departure time of a flight and the departure time of the next departing flight taken by the user.
 
 **Expected Columns**: user_id, biggest_window.  
 **Explanation:**  
@@ -164,7 +163,7 @@ GROUP BY
     USER_ID;
 ```
 
-5. Find the user_ids of people whose origin airport is Boston (BOS) and whose first and last flight were to the same destination airport. Only include people who have flown out of Boston at least twice.
+**Question 5.** Find the user_ids of people whose origin airport is Boston (BOS) and whose first and last flight were to the same destination airport. Only include people who have flown out of Boston at least twice.
   
 **Expected Columns:** user_id.  
 
@@ -227,7 +226,7 @@ WHERE
     AND t2.last_trip_rank = 1
     AND t1.destination_airport = t2.destination_airport;
 ```
-6.  How much session abandonment do we see? Session abandonment means they browsed but did not book anything.
+**Question 6.**  How much session abandonment do we see? Session abandonment means they browsed but did not book anything.
 
 **Expected columns:** session_status, no_of_sessions.  
 
@@ -251,11 +250,12 @@ GROUP BY
 
 1. Customers of age 34- 45 of all genders are the most travellers
 2. Session abandonement is higher in non-summer months.
+3. Frequent flyers(users who have completed at least 10 flights) were identified, and for each of these users, the longest duration between 2 consecutive flights taken was ascertained.
 
 ## Recommendations
-1. Target High-Travel Demographics: Based on the first query, the travel company can focus its marketing efforts on the age and gender groups that travel the most, gearing promotions and offers towards these demographics.
+**1. Target High-Travel Demographics:** Based on the first query, the travel company can focus its marketing efforts on the age and gender groups that travel the most, gearing promotions and offers towards these demographics.
 
-2. Seasonal Marketing Strategies: The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rate, like the non-summer months, to encourage customers to complete their bookings.
+**2. Seasonal Marketing Strategies:** The second query shows how session abandonment rates vary by season. The company can use this information to adjust its marketing strategies, offering promotions and incentives during periods of higher session abandonment rate, like the non-summer months, to encourage customers to complete their bookings.
 
-3. Customer loyalty programs: The third query returns frequent flyers, a strategy to reward their loyalty can be put in place, such as exclusive discounts, upgrades, etc so as to retain their loyalty and not lose them to other competitors. 
+**3. Customer loyalty programs:** The third query returns frequent flyers, a strategy to reward their loyalty can be put in place, such as exclusive discounts, upgrades, etc so as to retain their loyalty and not lose them to other competitors. Frequent flyers with larger gaps between flights could indicate seasonal travel habits, special discounts and packages tailored to holiday or seasonal travel could be offered.
 
