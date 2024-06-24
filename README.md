@@ -13,7 +13,8 @@ Please refer to the attached Microsoft Word document for the Entity Relationship
 - Postgres SQL - Used for data analysis
 
 ## Data Analysis
-Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:
+Since the aim of this project is to better understand customers, The following questions were answered using POSTGRESQL:  
+
 **Question 1.** Which cross-section of age and gender travels the most?
 
 **Expected columns:** total_no_of_trips, age_group, gender.  
